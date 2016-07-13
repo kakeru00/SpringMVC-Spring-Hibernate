@@ -1,7 +1,13 @@
 package com.zh.entity;
 
-import org.springframework.validation.annotation.Validated;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table(name="t_user")
 public class User {
 	
 	private int id;
@@ -16,9 +22,16 @@ public class User {
 		this.password = password;
 		this.email = email;
 	}
-	public User() {
-		// TODO Auto-generated constructor stub
+	public User( String name, String password, String email) {
+		super();
+		this.name = name;
+		this.password = password;
+		this.email = email;
 	}
+	public User() {
+	}
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	public int getId() {
 		return id;
 	}

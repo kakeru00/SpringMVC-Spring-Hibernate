@@ -2,21 +2,17 @@ package com.zh.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,23 +20,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.zh.entity.User;
+import com.zh.service.UserService;
 
 @Controller
 @RequestMapping("user")
 public class UserController {
-
-	static private Map<Integer, User> users = new HashMap<Integer, User>();
-	static private int key;
-	static {
-		key = 0;
-		users.put(++key, new User(key, "a", "a", "a@a.a"));
-		users.put(++key, new User(key, "b", "b", "b@b.b"));
-
-	}
+	@Resource
+	private UserService userService;
 
 	@RequestMapping(value = {"/users","/"}, method = RequestMethod.GET)
 	public String find(Model model) {
-		model.addAttribute("users", users);
+		userService.find();
 		return "user/users";
 	}
 
@@ -54,27 +44,28 @@ public class UserController {
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public String add(User user) {
 		
-		user.setId(++key);
-		users.put(key, user);
+		userService.save(user);
 		return "redirect:/user/users";
 	}
 
 	@RequestMapping(value = "/{id}/update", method = RequestMethod.GET)
 	public String update(Model model, @PathVariable int id) {
-		model.addAttribute(users.get(id));
+		model.addAttribute(userService.get(id));
 		return "user/update";
 	}
 
 	@RequestMapping(value = "/{id}/update", method = RequestMethod.POST)
 	public String update(User user, @PathVariable int id) {
-		user.setId(users.get(id).getId());
-		users.replace(id, user);
+		user.setId(id);
+		userService.update(user);
 		return "redirect:/user/users";
 	}
 
 	@RequestMapping(value = "/{id}/delete", method = RequestMethod.GET)
 	public String delete(@PathVariable int id) {
-		users.remove(id);
+		User user = userService.get(id);
+		if(user!=null)
+			userService.delete(user);;
 		return "redirect:/user/users";
 	}
 
