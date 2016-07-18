@@ -12,7 +12,7 @@
 <body>
 	
 	<c:forEach  items="${users}" var="u">
-		 <a href="${u.key}/update">${u.key}</a>--${u.value.id}--${u.value.name}--${u.value.email}--${u}--<a href="${u.key}/delete">delete</a><br/>
+		 <a href="${u.id}/update">${u.id}</a>----${u.name}--${u.email}--${u}--<a href="${u.id}/delete">delete</a><br/>
 	</c:forEach>
 </body>
 </html>

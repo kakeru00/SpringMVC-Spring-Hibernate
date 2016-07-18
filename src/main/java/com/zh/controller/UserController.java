@@ -30,7 +30,7 @@ public class UserController {
 
 	@RequestMapping(value = {"/users","/"}, method = RequestMethod.GET)
 	public String find(Model model) {
-		userService.find();
+		model.addAttribute("users",userService.find());
 		return "user/users";
 	}
 
